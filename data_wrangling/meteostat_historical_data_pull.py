@@ -20,7 +20,7 @@ goes well, include more zip codes. '''
 
 # read in csv file with all US zipcodes
 '''THIS IS THE REAL ZIPCODE SET'''
-zips = pd.read_csv(r'D:/CSU/Winter 2021/CSC510 - Foundations of Artificial Intelligence/Portfolio Project/Data/simplemaps_uszips_basicv1.79/uszips.csv')
+zips = pd.read_csv(r'D:/CSU/Winter 2021/CSC510 - Foundations of Artificial Intelligence/Portfolio Project/Data/simplemaps_uszips_basicv1.79/uszips_shuffled_50_zipcode_limit.csv')
 
 #obtain only the latitude and longitude coordinates
 zip_coords = zips[['lat', 'lng', 'city', 'state_name']]
@@ -54,7 +54,7 @@ for lat, lng, city, state_name in zip_coords.itertuples(index=False):
     if new_df.empty:
         pass
     else:
-        new_df.to_csv('D:/CSU/Winter 2021/CSC510 - Foundations of Artificial Intelligence/Portfolio Project/Data/simplemaps_uszips_basicv1.79/dataframe_data_test_output/hist_data' + str(lat)+ str(lng) + '.csv')
+        new_df.to_csv('D:/CSU/Winter 2021/CSC510 - Foundations of Artificial Intelligence/Portfolio Project/Data/simplemaps_uszips_basicv1.79/climate_data_for_US/hist_data' + str(lat)+ str(lng) + '.csv')
 
 
 print("ALL DONE")
