@@ -58,31 +58,3 @@ for lat, lng, city, state_name in zip_coords.itertuples(index=False):
 
 
 print("ALL DONE")
-
-
-#     # initialize the dataframe every time
-# new_df = pd.DataFrame()
-
-#     #set a point that will look for nearby weather stations
-# point_dummy = Point(17.96612, -66.94383)
-
-#     # Get daily data
-# data = Daily(point_dummy, start, end)
-# data = data.fetch()
-
-#     # concat dataframes
-# new_df = new_df.append(data)
-# # new_df['lat'] = lat
-# # new_df['lng'] = lng
-
-# print(new_df)
-
-# Plot line chart including average, minimum and maximum temperature
-# data.plot(y=['tavg', 'tmin', 'tmax'])
-# plt.show()
-
-# point = Point(18.18005,-66.75218)
-# data = Daily(point, start, end)
-# data = data.fetch()
-
-# print(data)
