@@ -12,9 +12,9 @@ import sklearn as sk
 import math
 
 # load our model using keras load_model library
-weather_loaded_lstm_model = load_model('D:/CSU/Winter 2021/CSC510 - Foundations of Artificial Intelligence/Portfolio Project/Code/my_model4.h5')
+weather_loaded_lstm_model = load_model("my_model4.h5")
 # load random forest classifier snowfall prediction
-snowfall_prediction = joblib.load("E:/CSU/Winter 2021/CSC510 - Foundations of Artificial Intelligence/Portfolio Project/Code/random_forest_snow_prediction30.joblib")
+snowfall_prediction = joblib.load("random_forest_snow_prediction30.joblib")
 
 
 '''
@@ -24,7 +24,8 @@ coordinates for that city and input them to the meteostat daily api
 and retrieve yesterday's climate numbers. Then we can save that as a tensor and 
 feed it into the model. The model will then give us an output tensor. We'll use 
 that to disply the next days forecast and as input for the next 6 days.
-Final output will be the display of the forecast for the next seven days. 
+Final output will be the display of the forecast for the ne
+xt seven days. 
 '''
 
 # get the previous day's numbers
@@ -63,6 +64,10 @@ point_dummy = Point(location.latitude, location.longitude)
 data = Daily(point_dummy, start, end)
 data = data.fetch()
 
+print('''********************************************************************
+        \n\nThe last 8 days weather (Temps given in Celcius):
+        \n\n********************************************************************
+        ''')
 print(data)
 
 # get inputs for weather prediction
@@ -73,9 +78,6 @@ data['snow'] = data['snow'].fillna(0)
 
 # save inputs for random forest snowfall classifier
 data_snowfall_y = np.where(data['snow'] > 0, 1, 0)
-
-print(data_snowfall_y)
-
 
 # we need to change the wspd and wdir to a vector in radians
 wv = data_to_use_for_input.pop('wspd')
@@ -150,7 +152,7 @@ input_data_for_snowfall_pred = input_data_list
 
 
 
-print("**********prediction:**********")
+# **********prediction:**********
 prediction = weather_loaded_lstm_model.predict(input_data)
 
 denormalized_prediction_output = []
@@ -189,23 +191,35 @@ denormalized_prediction_output_dict = {
 
 # ****outputs****
 
+print('''\n\n**************************************************************************************)
+        \n\nPREDICTION RESULTS BELOW!
+        \n\n**************************************************************************************''')
+
 # # fit the classifier
 snowfall_prediction.fit(input_data_for_snowfall_pred , data_snowfall_y)
 # predict snowfall
-print(snowfall_prediction.predict(input_data_for_snowfall_pred))
+# if the list has just one '1', then it will snow, otherwise, it will not
+if sum(snowfall_prediction.predict(input_data_for_snowfall_pred)):
+    print("\n\nThere will be snowfall tomorrow!!!")
+else:
+    print("\n\nThere will not be snowfall tomorrow!")
 
 
+# initialize the output that we'll keep in a list 
 final_prediction_of_temps_farenheit = []
-# # get the avg temp 
+
 
 final_prediction_of_temps_farenheit.append(round((denormalized_prediction_output_dict['tavg']*(9.0/5.0))+ 32, 0))
-final_prediction_of_temps_farenheit.append(round((denormalized_prediction_output_dict['tavg']*(9.0/5.0))+ 32, 0))
-final_prediction_of_temps_farenheit.append(round((denormalized_prediction_output_dict['tavg']*(9.0/5.0))+ 32, 0))
-print("tacg, tmin, tmax ", final_prediction_of_temps_farenheit)
+final_prediction_of_temps_farenheit.append(round((denormalized_prediction_output_dict['tmin']*(9.0/5.0))+ 32, 0))
+final_prediction_of_temps_farenheit.append(round((denormalized_prediction_output_dict['tmax']*(9.0/5.0))+ 32, 0))
 
-# prediction_output_farenheit = (prediction_output * (9.0/5.0)) + 32
+print('''\n\n********************\nCelcius Average, Lows, and Highs\n*******************''')
+print("\nAverage Temperature (Celcius): " , round(denormalized_prediction_output_dict['tavg'], 1))
+print("\nLow Temperature (Celcius): " , round(denormalized_prediction_output_dict['tmin'], 1))
+print("\nHigh Temperature (Celcius): " , round(denormalized_prediction_output_dict['tmax'], 1))
 
-
-print("Prediction of all features: ", denormalized_prediction_output_dict)
-# print("Prediction in Celcius: ", prediction_output)
-# print("Prediction in Farenheit: ", prediction_output_farenheit)
+print('''\n\n*******************\nFarenheit Average, Lows, and Highs\n*******************''')
+print("\nAverage Temperature (Farenheit): ", final_prediction_of_temps_farenheit[0])  
+print("\nLow Temperature (Farenheit): ", final_prediction_of_temps_farenheit[1])  
+print("\nHigh Temperature (Farenheit): ", final_prediction_of_temps_farenheit[2])  
+print("\n\nPrediction of all features: ", denormalized_prediction_output_dict)
